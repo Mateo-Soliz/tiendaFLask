@@ -21,3 +21,13 @@ class carrito(db.Model):
     
     def __repr__(self):
         return '<Carrito %r>' % self.username
+    
+class producto(db.Model):
+    nombre = db.Column(db.String(80), primary_key=True)
+    precio = db.Column(db.Integer, nullable=False)
+    stock = db.Column(db.Integer, nullable=False)
+    carrito = db.relationship('carrito', backref='producto', lazy=True)
+    
+    def __repr__(self):
+        return '<Producto %r>' % self.nombre
+   
