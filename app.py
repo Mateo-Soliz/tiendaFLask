@@ -1,8 +1,9 @@
 from flask import Flask,render_template,redirect,url_for
 from moduls import db
 app = Flask(__name__)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'clave'
 db.__init__(app)
 
 @app.route('/')
