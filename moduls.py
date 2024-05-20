@@ -8,14 +8,15 @@ class user(db.Model):
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     carrito = db.relationship('carrito', backref='user', lazy=True)
+    carrito = db.relationship('pedido', backref='user', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
 
 class carrito(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), ForeignKey('user.username'))
-    producto = db.Column(db.String(80), ForeignKey('producto.nombre'))
+    username = db.Column(db.String(80), ForeignKey('user.username'), primart_key=True)
+    producto = db.Column(db.String(80), ForeignKey('producto.nombre'), primary=True)
     cantidad = db.Column(db.Integer, nullable=False)
     total = db.Column(db.Integer, nullable=False)
 
@@ -26,7 +27,8 @@ class producto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(80), nullable=False)
     precio = db.Column(db.Float(10,2), nullable=False)
-    carrito = db.relationship('carrito', backref='carrito', lazy=True)
+    carrito = db.relationship('carrito', backref='producto', lazy=True)
+    carrito = db.relationship('pedido', backref='producto', lazy=True)
 
     def __repr__(self):
         return '<Producto %r>' % self.username
