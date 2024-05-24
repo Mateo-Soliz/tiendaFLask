@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header style="
+    background-color: rgb(0, 166, 195);  display: flex; width: 100%; justify-content: center; align-items: center; padding: 10px 0;">
+        <nav style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <a style=" display:flex; align-items: center;" href="{{ url_for('index') }}"><img style="width: 16px" src="{{ url_for('static', filename='favicon.svg') }}" alt="Logo"></a>
+            <ul class="ulnav">
+                <li><a class="anav" href="{{ url_for('index') }}">Home</a></li>
+                {% if g.user %}
+                <li><a class="anav" href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                <li><a class="anav" href="{{ url_for('login') }}">Login</a></li>
+                <li><a class="anav" href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+                {% block navlinks %}{% endblock %}
+            </ul>
+        </nav>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>
+        {% block footer %}{% endblock %}
+    </footer>
+</body>
+</html>

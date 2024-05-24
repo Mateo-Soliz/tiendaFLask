@@ -9,14 +9,24 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    javier = User(username = 'javier', password = '1234', email = 'javier@gmail.com')
-    db.session.add(javier)
-    db.session.commit()
     return render_template('index.html')
 
 @app.route('/<string:username>/carrito')
 def carrito(username):
     return render_template('carrito.html',username=username)
+
+@app.route('/login' , methods=['GET'])
+def login():
+    return render_template('login.html')
+
+@app.route('/logout' , methods=['GET'])
+def logout():
+    return redirect(url_for('index'))
+
+@app.route('/register' , methods=['GET'])
+def register():
+    return render_template('register.html')
+
 
 
 if __name__ == '__main__':
