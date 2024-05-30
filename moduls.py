@@ -26,11 +26,21 @@ class Producto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(80), nullable=False, unique=True)
     precio = db.Column(db.Float(10, 2), nullable=False)
+    categoria = db.Column(db.Integer, db.ForeignKey('categoria.nombre'))
     carritos = db.relationship('Carrito', backref='producto', lazy=True)
     pedidos = db.relationship('Pedido', backref='producto', lazy=True)
 
     def __repr__(self):
         return '<Producto %r>' % self.nombre
+    
+class Categoria(db.Model):
+    __tablename__ = 'categoria'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(80), nullable=False, unique=True)
+    productos = db.relationship('Producto', backref='categoria', lazy=True)
+
+    def __repr__(self):
+        return '<Categoria %r>' % self.nombre
 
 class Carrito(db.Model):
     __tablename__ = 'carrito'
