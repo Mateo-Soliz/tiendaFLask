@@ -35,7 +35,8 @@ class LoginForm(FlaskForm):
 @app.route('/')
 def index():
     productos = Producto.query.all()
-    return render_template('index.html', productos=productos)
+    categorias = Categoria.query.all()
+    return render_template('index.html', productos=productos, categorias=categorias)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

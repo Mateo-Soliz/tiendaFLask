@@ -6,14 +6,21 @@
         <p>Hola, {{ g.user.username }}!</p>
         <a href="{{ url_for('add_producto') }}"><button>Añadir producto</button></a>
         <a href="{{ url_for('add_categoria') }}"><button>Añadir categoria</button></a>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin: 5px;">
-            {% for producto in productos %}
-            <div>
-                <img src={{ producto.imagen }}>
-                <h3>{{ producto.nombre }}</h3>
-                <p>{{ producto.descripcion }}</p>
-                <a href=""><button>Añadir al carrito</button></a>
-            </div>
+        <div style="display: flex; flex-direction: column; width: 100%;">
+            {% for categoria in categorias %}
+            <h2>{{ categoria.nombre }}</h2>
+                <div style="width: 100%; display: flex; overflow: auto;">
+                {% for producto in productos %}
+                {% if producto.categoria_id == categoria.id %}
+                <div style="margin: 5px;">
+                    <img src={{ producto.imagen }}>
+                    <h3>{{ producto.nombre }}</h3>
+                    <p>{{ producto.descripcion }}</p>
+                    <a href=""><button>Añadir al carrito</button></a>
+                </div>
+                {% endif %}
+                {% endfor %}
+                </div>
             {% endfor %}
         </div>
     {% else %}
