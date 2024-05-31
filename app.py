@@ -120,15 +120,15 @@ def carrito():
     return render_template('carrito.html')
 
 @app.route('/add_carrito/<int:id>', methods=['GET', 'POST'])
-def add_carrito():
-    if request.method == 'POST':
-        product = Producto.query.get(id)
-        cantidad = request.form['cantidad']
-        total = cantidad * product.precio
-        new_carrito = Carrito(username=g.user.username, producto_nombre=product.nombre, cantidad=cantidad, total=total)
-        db.session.add(new_carrito)
-        db.session.commit()
-        return redirect(url_for('carrito'))
+def add_carrito( id):
+    product = Producto.query.get(id)
+    cantidad = 2
+    total = int(cantidad * product.precio)
+    print(product)
+    new_carrito = Carrito(username=g.user.username, producto_nombre=product.nombre, cantidad=cantidad, total=total)
+    db.session.add(new_carrito)
+    db.session.commit()
+    return redirect(url_for('carrito'))
 
 if __name__ == '__main__':
     with app.app_context():

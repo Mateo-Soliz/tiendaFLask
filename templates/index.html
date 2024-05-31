@@ -12,7 +12,7 @@
                 <img src={{ producto.imagen }}>
                 <h3>{{ producto.nombre }}</h3>
                 <p>{{ producto.descripcion }}</p>
-                <a href=""><button>Añadir al carrito</button></a>
+                <a href="{{ url_for('add_carrito', id=producto.id) }}">Añadir producto</a>
             </div>
             {% endfor %}
         </div>

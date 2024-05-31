@@ -43,7 +43,7 @@ class Categoria(db.Model):
 
 class Carrito(db.Model):
     __tablename__ = 'carrito'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True , autoincrement=True)
     username = db.Column(db.String(80), db.ForeignKey('user.username'), primary_key=True)
     producto_nombre = db.Column(db.String(80), db.ForeignKey('producto.nombre'), primary_key=True)
     cantidad = db.Column(db.Integer, nullable=False)
@@ -54,7 +54,7 @@ class Carrito(db.Model):
 
 class Pedido(db.Model):
     __tablename__ = 'pedido'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), db.ForeignKey('user.username'))
     producto_nombre = db.Column(db.String(80), db.ForeignKey('producto.nombre'))
     cantidad = db.Column(db.Integer, nullable=False)
