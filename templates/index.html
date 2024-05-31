@@ -1,11 +1,6 @@
-<!doctype html>
-<html>
-<head>
-    <title>Inicio</title>
-</head>
-<body>
-    <main><p>Hola</p></main>
-
+{% extends "base_template.html" %}
+{% block title %}Añadir Categoría{% endblock %}
+{% block content %}
     <h1>¡Bienvenido a la Página de Inicio!</h1>
     {% if g.user %}
         <p>Hola, {{ g.user.username }}!</p>
@@ -15,13 +10,12 @@
         <p><a href="{{ url_for('login') }}">Iniciar sesión</a></p>
         <p><a href="{{ url_for('register') }}">Registrarse</a></p>
     {% endif %}
-    <main>
+    <div>
         
         <p>Hola</p>
 
         <a href="{{ url_for('add_producto') }}"><button>Añadir producto</button></a>
         <a href="{{ url_for('add_categoria') }}"><button>Añadir categoria</button></a>
-    
-    </main>
-</body>
-</html>
+
+    </div>
+{% endblock %}
