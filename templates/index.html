@@ -4,18 +4,19 @@
     <h1>¡Bienvenido a la Página de Inicio!</h1>
     {% if g.user %}
         <p>Hola, {{ g.user.username }}!</p>
-        <p><a href="{{ url_for('logout') }}">Cerrar sesión</a></p>
-    {% else %}
-        <p>No has iniciado sesión.</p>
-        <p><a href="{{ url_for('login') }}">Iniciar sesión</a></p>
-        <p><a href="{{ url_for('register') }}">Registrarse</a></p>
-    {% endif %}
-    <div>
-        
-        <p>Hola</p>
-
         <a href="{{ url_for('add_producto') }}"><button>Añadir producto</button></a>
         <a href="{{ url_for('add_categoria') }}"><button>Añadir categoria</button></a>
-
-    </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin: 5px;">
+            {% for producto in productos %}
+            <div>
+                <img src={{ producto.imagen }}>
+                <h3>{{ producto.nombre }}</h3>
+                <p>{{ producto.descripcion }}</p>
+                <a href=""><button>Añadir al carrito</button></a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No has iniciado sesión.</p>
+    {% endif %}
 {% endblock %}
