@@ -1,2 +1,16 @@
 {% extends "base_template.html" %}
 {% block title %}Carrito{% endblock %}
+{% block content %}
+    <h1>Carrito</h1>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin: 5px;">
+        {% for producto in products %}
+        <div>
+            <img src={{ producto.imagen }}>
+            <h3>{{ producto.nombre }}</h3>
+            <p>asd</p>
+            <p>{{ producto.descripcion }}</p>
+            <a href="{{ url_for('add_carrito', id=producto.id) }}">Añadir producto</a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

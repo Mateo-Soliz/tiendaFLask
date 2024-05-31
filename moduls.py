@@ -43,11 +43,12 @@ class Categoria(db.Model):
 
 class Carrito(db.Model):
     __tablename__ = 'carrito'
-    id = db.Column(db.Integer, primary_key=True , autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), db.ForeignKey('user.username'), primary_key=True)
     producto_nombre = db.Column(db.String(80), db.ForeignKey('producto.nombre'), primary_key=True)
     cantidad = db.Column(db.Integer, nullable=False)
     total = db.Column(db.Integer, nullable=False)
+    
 
     def __repr__(self):
         return '<Carrito %r, %r, %r>' % (self.id, self.username, self.producto_nombre)

@@ -115,17 +115,23 @@ def add_categoria():
 
 @app.route('/carrito')
 def carrito():
-    
+    #coger todos los items de carrito de un usuario
+    All_items_Carrito_user = Carrito.query.filter_by(username=g.user.username).all()
 
-    return render_template('carrito.html')
+    return render_template('carrito.html', products=All_items_Carrito_user)
 
 @app.route('/add_carrito/<int:id>', methods=['GET', 'POST'])
 def add_carrito( id):
     product = Producto.query.get(id)
+    #coger el ultimo intem de carrito y sumarle 1
+    cantidadDeCarrito = Carrito.query.all()
+    cantidadD = len(cantidadDeCarrito)
     cantidad = 2
     total = int(cantidad * product.precio)
-    print(product)
-    new_carrito = Carrito(username=g.user.username, producto_nombre=product.nombre, cantidad=cantidad, total=total)
+    userD=g.user.username
+    producto_nombre=product.nombre
+    id = cantidadD + 1
+    new_carrito = Carrito(id=id,username=userD, producto_nombre=producto_nombre, cantidad=cantidad, total=total)
     db.session.add(new_carrito)
     db.session.commit()
     return redirect(url_for('carrito'))
