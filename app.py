@@ -6,6 +6,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from moduls import *
 from werkzeug.utils import secure_filename
+from flask import jsonify
 import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -117,10 +118,11 @@ def add_categoria():
 def carrito():
     #coger todos los items de carrito de un usuario
     All_items_Carrito_user = Carrito.query.filter_by(username=g.user.username).all()
-
-    return render_template('carrito.html', products=All_items_Carrito_user)
-
-@app.route('/add_carrito/<int:id>', methods=['GET', 'POST'])
+    total = 0
+    for item in All_items_Carrito_user:
+        total += item.total
+    return render_template('carrito.html', products=All_items_Carrito_user, total=total)
+@app.route('/add_carrito/<int:id>')
 def add_carrito( id):
     product = Producto.query.get(id)
     #coger el ultimo intem de carrito y sumarle 1
@@ -134,6 +136,17 @@ def add_carrito( id):
     new_carrito = Carrito(id=id,username=userD, producto_nombre=producto_nombre, cantidad=cantidad, total=total)
     db.session.add(new_carrito)
     db.session.commit()
+    return redirect(url_for('carrito'))
+
+@app.route('/delete_carrito/<int:id>')
+def delete_carrito(id):
+    item = Carrito.query.get(id)
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for('carrito'))
+@app.route('/comprar')
+def comprar():
+    
     return redirect(url_for('carrito'))
 
 if __name__ == '__main__':
