@@ -6,11 +6,9 @@
 <body>
     <main><p>Hola</p></main>
 
-    <a href="{{ url_for('carrito', username='javier')}}">Carrito</a>
-
     <h1>¡Bienvenido a la Página de Inicio!</h1>
     {% if g.user %}
-        <p>Hola, {{ g.user.nombre }}!</p>
+        <p>Hola, {{ g.user.username }}!</p>
         <p><a href="{{ url_for('logout') }}">Cerrar sesión</a></p>
     {% else %}
         <p>No has iniciado sesión.</p>
@@ -25,6 +23,5 @@
         <a href="{{ url_for('add_categoria') }}"><button>Añadir categoria</button></a>
     
     </main>
->>>>>>> Arjona
 </body>
 </html>

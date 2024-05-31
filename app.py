@@ -1,41 +1,19 @@
 
-from flask import Flask,render_template,redirect,url_for
-from moduls import db,User,Producto,Carrito,Pedido
-from flask import Flask,render_template,redirect,url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, flash, session, g, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from moduls import *
 from werkzeug.utils import secure_filename
 import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = 'static/imgs'
+app.config['UPLOAD_FOLDER'] = 'static\imgs'
+app.config['SECRET_KEY'] = 'clave_secreta'
 db.init_app(app)
 
-from flask import Flask, render_template, redirect, url_for, flash, session, g, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from werkzeug.security import generate_password_hash, check_password_hash
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'La anarquia gobernara el mundo'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    nombre = db.Column(db.String(50), nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
 class RegistrationForm(FlaskForm):
     email = StringField('Correo electrónico', validators=[DataRequired(), Email()])
@@ -62,7 +40,7 @@ def index():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data, nombre=form.nombre.data)
+        user = User(email=form.email.data, username=form.nombre.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -77,7 +55,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
-            session['user_id'] = user.id
+            session['user_id'] = user.username
             flash('¡Has iniciado sesión!')
             return redirect(url_for('index'))
         else:
