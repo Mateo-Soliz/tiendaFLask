@@ -15,7 +15,7 @@
             <ul class="ulnav">
                 <li><a class="anav" href="{{ url_for('index') }}">Home</a></li>
                 {% if g.user %}
-                <li><a class="anav" href="{{ url_for('add_producto') }}">Carrito</a></li>
+                <li><a class="anav" href="{{ url_for('carrito') }}">Carrito</a></li>
                 <li><a class="anav" href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
                 <li><a class="anav" href="{{ url_for('login') }}">Login</a></li>
