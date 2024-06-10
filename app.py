@@ -34,7 +34,9 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    productos = Producto.query.all()
+    categorias = Categoria.query.all()
+    return render_template('index.html', productos=productos, categorias=categorias)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -73,6 +75,8 @@ def load_logged_in_user():
     user_id = session.get('user_id')
     g.user = User.query.get(user_id) if user_id else None
 
+
+
 @app.route('/add_producto', methods=['GET', 'POST'])
 def add_producto():
     if request.method == 'POST':
@@ -100,7 +104,6 @@ def add_producto():
     categorias = Categoria.query.all()
     return render_template('add_producto.html', categorias=categorias)
 
-# Ruta para añadir categoría
 @app.route('/add_categoria', methods=['GET', 'POST'])
 def add_categoria():
     if request.method == 'POST':

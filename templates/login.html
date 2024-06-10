@@ -1,9 +1,6 @@
-<!doctype html>
-<html>
-<head>
-    <title>Iniciar sesión</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+{% block title %}Iniciar sesion{% endblock %}
+{% block content %}
     <h1>Iniciar sesión</h1>
     <form method="post">
         {{ form.hidden_tag() }}
@@ -23,6 +20,4 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    <p><a href="{{ url_for('index') }}">Inicio</a></p>
-</body>
-</html>
+{% endblock %}

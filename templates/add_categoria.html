@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Añadir Categoría</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+{% block title %}Añadir categoria{% endblock %}
+{% block content %}
     <h1>Añadir Categoría</h1>
     <form action="{{ url_for('add_categoria') }}" method="post">
         <label for="nombre">Nombre:</label>
@@ -13,5 +8,4 @@
         <input type="submit" value="Añadir Categoría">
     </form>
     <a href="{{ url_for('index') }}"><button>Volver al Inicio</button></a>
-</body>
-</html>
+{% endblock %}
