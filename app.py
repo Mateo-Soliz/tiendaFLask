@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, redirect, url_for, flash, session, g, request
-from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from flask_login import LoginManager,login_user, login_required, logout_user, current_user
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from moduls import *
@@ -12,6 +12,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static\imgs'
 app.config['SECRET_KEY'] = 'clave_secreta'
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
 db.init_app(app)
 
 
@@ -32,6 +35,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Contraseña', validators=[DataRequired()])
     submit = SubmitField('Iniciar sesión')
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.query(User).get(user_id)  
+
 @app.route('/')
 def index():
     productos = Producto.query.all()
@@ -46,8 +54,8 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('¡Felicidades, ya estás registrado!')
-        return redirect(url_for('login'))
+        login_user(user)
+        return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
 
@@ -57,23 +65,16 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
-            session['user_id'] = user.username
-            flash('¡Has iniciado sesión!')
+            login_user(user , remember=True)
+            
             return redirect(url_for('index'))
-        else:
-            flash('Correo electrónico o contraseña incorrectos')
     return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
-    flash('Has cerrado sesión.')
+    logout_user()
+    
     return redirect(url_for('index'))
-
-@app.before_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-    g.user = User.query.get(user_id) if user_id else None
 
 
 
@@ -82,7 +83,7 @@ def add_producto():
     if request.method == 'POST':
         nombre = request.form['nombre']
         descripcion = request.form['descripcion']
-        precio = request.form['precio']
+        precio = round(float(request.form['precio']), 2)
         categoria_id = request.form['categoria']
         if 'imagen' not in request.files:
             flash('No file part')
@@ -116,20 +117,48 @@ def add_categoria():
 
 @app.route('/carrito')
 def carrito():
-    
-
-    return render_template('carrito.html')
+    carritos = Carrito.query.filter_by(username=current_user.username).all()
+    productos= []
+    coste_Total = 0
+    for carrito in carritos:
+        producto = Producto.query.filter_by(nombre=carrito.producto_nombre).first()
+        productos.append({'nombre': producto.nombre, 'descripcion': producto.descripcion, 'precio': producto.precio, 'cantidad': carrito.cantidad, 'total': carrito.total, 'imagen': producto.imagen, 'id': carrito.id})
+        coste_Total += carrito.total
+    print(productos)
+    return render_template('carrito.html', productos=productos, coste_Total=coste_Total)
 
 @app.route('/add_carrito/<int:id>', methods=['GET', 'POST'])
-def add_carrito():
+@login_required
+def add_carrito(id):
     if request.method == 'POST':
         product = Producto.query.get(id)
-        cantidad = request.form['cantidad']
-        total = cantidad * product.precio
-        new_carrito = Carrito(username=g.user.username, producto_nombre=product.nombre, cantidad=cantidad, total=total)
+        cantidad = int(request.form['cantidad'])
+        total = float(cantidad * product.precio)
+        allCarritos = len(Carrito.query.all())
+        id = allCarritos + 1
+        new_carrito = Carrito(id=id,username=current_user.username, producto_nombre=product.nombre, cantidad=cantidad, total=total)
         db.session.add(new_carrito)
         db.session.commit()
         return redirect(url_for('carrito'))
+    product = Producto.query.get(id)
+    return render_template('add_carrito.html', producto=product)
+
+@app.route('/delete_carrito/<int:id>', methods=['GET', 'POST'])
+def delete_carrito(id):
+    carrito = Carrito.query.filter_by(id=id).first()
+    if carrito:
+        db.session.delete(carrito)
+        db.session.commit()
+        return redirect(url_for('carrito'))
+    return redirect(url_for('carrito'))
+
+@app.route('/comprar')
+def comprar():
+    carritos = Carrito.query.filter_by(username=current_user.username).all()
+    for carrito in carritos:
+        db.session.delete(carrito)
+        db.session.commit()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():

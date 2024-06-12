@@ -2,27 +2,35 @@
 {% block title %}Añadir Categoría{% endblock %}
 {% block content %}
     <h1>¡Bienvenido a la Página de Inicio!</h1>
-    {% if g.user %}
-        <p>Hola, {{ g.user.username }}!</p>
+    {% if current_user.username %}
+        <p>Hola, {{ current_user.username }}!</p>
         <a href="{{ url_for('add_producto') }}"><button>Añadir producto</button></a>
         <a href="{{ url_for('add_categoria') }}"><button>Añadir categoria</button></a>
         <div style="display: flex; flex-direction: column; width: 100%;">
             {% for categoria in categorias %}
             <h2>{{ categoria.nombre }}</h2>
-                <div style="width: 100%; display: flex; overflow: auto;">
+            <div style="width: 100%; display: flex; flex-wrap: wrap; gap: 10px;">
                 {% for producto in productos %}
                 {% if producto.categoria_id == categoria.id %}
-                <div style="margin: 5px;">
-                    <img src={{ producto.imagen }}>
-                    <h3>{{ producto.nombre }}</h3>
-                    <p>{{ producto.descripcion }}</p>
-                    <a href=""><button>Añadir al carrito</button></a>
+                <div style="width: 200px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column;">
+                    <div style="height: 100px; overflow: hidden; border-bottom: 1px solid #ddd;">
+                        <img src="{{ producto.imagen }}" style="width: 100%; height: 100px; object-fit: cover;">
+                    </div>
+                    <div style="padding: 10px;">
+                        <h3 style="font-size: 1.2em; margin-bottom: 10px;">{{ producto.nombre }}</h3>
+                        <p style="margin: 0; white-space: normal; word-wrap: break-word; height: 50px; overflow: hidden;">{{ producto.descripcion }}</p>
+                        <p style="font-weight: bold; margin: 10px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ '%.2f' % producto.precio }} €</p>
+                    </div>
+                    <div style="height: 50px; display: flex; justify-content: center; align-items: center;">
+                        <a href="{{ url_for('add_carrito', id=producto.id) }}" style="width: 100%;"><button style="width: 80%;">Añadir al carrito</button></a>
+                    </div>
                 </div>
                 {% endif %}
                 {% endfor %}
-                </div>
+            </div>
             {% endfor %}
         </div>
+        
     {% else %}
         <p>No has iniciado sesión.</p>
     {% endif %}

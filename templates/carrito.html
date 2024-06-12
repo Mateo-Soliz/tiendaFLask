@@ -1,2 +1,25 @@
 {% extends "base_template.html" %}
 {% block title %}Carrito{% endblock %}
+{% block content %}
+    <h1>Carrito</h1>
+    <div style="display: flex; flex-direction: column; width: 100%;">
+        {% if not productos %}
+        <p>No hay productos en el carrito.</p>
+        {% endif %}
+        {% for producto in productos %}
+        <div style="margin: 5px; display: flex; flex-direction: row; align-items: center; gap: 10px;">
+            <img src='{{ producto.imagen }}' style="width: 50px;">
+            <input type="hidden" name="id" value="{{ producto.id }}">
+            <h3>{{ producto.nombre }}</h3>
+            <p>{{ '%.2f' % producto.total }} €</p>
+            <p>Cantidad: {{ producto.cantidad }}</p>
+            <a href="{{ url_for('delete_carrito', id=producto.id) }}"><button>Eliminar</button></a>
+        </div>
+        {% endfor %}
+        {% if productos %}
+        <a href="{{ url_for('comprar')}}"><button>Comprar</button></a>
+        <p>Total: {{ '%.2f' % coste_Total }} €</p>
+        {% endif %}
+
+    </div>
+{% endblock %}
